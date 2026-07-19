@@ -9,11 +9,26 @@ const SITE = {
   hero: {
     eyebrow:  "MCAD Capstone 2026",
     title:    "Tiles",
-    hook:     "A short, punchy hook — one sentence that grabs attention and earns the next read.",
-    desc:     "Brief description of the project: what it is, who it's for, and why it matters. Two to three sentences max.",
+    hook:     "The entire studio in your pocket.",
+    desc:     "A studio management app that replaces the physical glaze test tile wall with a searchable, shared digital archive. Combining a glaze mixer, piece tracker, and community board in one tool. It's built for ceramics studios and their members, from new students to longtime potters, who rely on collective glaze knowledge that's usually scattered across shelves, physical tiles, and notebooks. Tiles makes that portable, permanent, and accessible to everyone in the studio, not just the people who've been there long enough to know where to look.",
     author:   "Andrew Rivera",
     program:  "User Experience Design",
     year:     "2026",
+
+    // Real glaze test tile photos, tiled at 50% opacity as a fixed
+    // backdrop behind the entire site (visible in the gaps around the
+    // hero and section cards). Placement is shuffled on each load.
+    // Add as many as you like — they cycle to fill the space.
+    tiles: [
+      { src: "images/white.jpg", caption: "" },
+      { src: "images/walnut.jpg", caption: "" },
+      { src: "images/straw.jpg", caption: "" },
+      { src: "images/rust.jpg", caption: "" },
+      { src: "images/mystery.jpg", caption: "" },
+      { src: "images/green.jpg", caption: "" },
+      { src: "images/floating-blue.jpg", caption: "" },
+      { src: "images/blue.jpg", caption: "" },
+    ],
   },
 
   // ── Nav labels (must match section ids below) ─────────────────
@@ -31,7 +46,10 @@ const SITE = {
   //   id, label, title, intro, callout,
   //   body    — array of paragraph strings
   //   steps   — array of { label, detail } objects
-  //   images  — { cols: 1|2|3, items: [{ src, caption, ratio }] }
+  //   images  — { cols: 1|2|3, width, items: [{ src, caption, ratio, position }] }
+  //             width — e.g. "75%", caps the image grid width (left-aligned)
+  //   imagesPosition — "afterIntro" to place images between intro and body
+  //                    (default places them after callout/steps)
   //   videos  — array of { src, caption }
   //             src: YouTube URL, local file path, or "" for placeholder
   //   links   — array of { label, href, desc }
@@ -47,20 +65,22 @@ const SITE = {
       label: "01 — Problem Statement",
       title: "What problem are we solving?",
 
-      intro: "One or two sentences framing the core problem — who is affected, what they struggle with, and why existing solutions fall short.",
+      intro: "Pottery studios document their glazes on a physical test tile wall, hundreds of one of a kind tiles that can overwhelm new students and challenge even experienced members trying to locate one specific combination. That knowledge exists in a single physical location, inaccessible outside the studio.",
 
       body: [
-        "Expand on the problem here. Describe the domain, the users, and the specific friction or gap you identified. What makes this worth solving? What happens when it goes unsolved?",
-        "You can add as many paragraphs as you need — each string in this array becomes a paragraph.",
+        "Each tile represents a fired test of a glaze or glaze combination, and over years a studio's wall can grow to hold hundreds of these records, each with its own color, texture, and firing notes. For a new student, that volume presents no clear entry point. There is no way to know what is being looked at or where to start. Experienced members face a related but different problem. With hundreds of tiles to search through, locating a specific combination, or determining whether it has already been tried, becomes its own task, even when the documentation itself is thorough and well kept.",
+
+        "That knowledge also exists in only one place. The wall can only be consulted while physically present in the studio, with no way to reference it from home. This limits when and how members can plan their work, and it leaves the studio's collective knowledge inaccessible the moment someone steps outside its walls. The physical format introduces a second limitation as well. Because each tile is a singular, unrepeatable object, damage is permanent. If a tile is dropped or broken and there is no digital record to fall back on. The glaze must be remixed, a new tile must be fired, and the studio must wait for the kiln before that information exists again. A photographic archive would eliminate this risk entirely.",
       ],
 
       callout: "\"A pull quote that captures the heart of the problem — could be something a user said, a striking statistic, or your own framing.\"",
 
+      imagesPosition: "afterIntro",
       images: {
-        cols: 2,
+        cols: 1,
+        width: "75%",
         items: [
-          { src: "", caption: "Image supporting the problem — photo, diagram, or context" },
-          { src: "", caption: "Second supporting image" },
+          { src: "images/CSoM Teaching.jpeg", caption: "Andrew Rivera demonstrating how to glaze at The Clay Studio of Missoula.", ratio:"tall"},
         ]
       },
 
@@ -262,15 +282,49 @@ const SITE = {
     </div>`;
   }
 
+  // Must match .site-backdrop's grid-auto-rows / gap / padding in styles.css
+  const BACKDROP_TILE = 130;
+  const BACKDROP_GAP = 17.6;
+
+  function pickBackdropTile(pool, left, top) {
+    const choices = pool.filter(t => t !== left && t !== top);
+    const from = choices.length ? choices : pool;
+    return from[Math.floor(Math.random() * from.length)];
+  }
+
+  function renderSiteBackdrop(tiles) {
+    const backdrop = document.getElementById('site-backdrop');
+    const withSrc = (tiles || []).filter(t => t.src);
+    if (!backdrop || withSrc.length === 0) return;
+
+    const contentWidth  = window.innerWidth  - 2 * BACKDROP_GAP;
+    const contentHeight = window.innerHeight - 2 * BACKDROP_GAP;
+    const cols = Math.max(1, Math.floor((contentWidth  + BACKDROP_GAP) / (BACKDROP_TILE + BACKDROP_GAP)));
+    const rows = Math.max(1, Math.ceil((contentHeight + BACKDROP_GAP) / (BACKDROP_TILE + BACKDROP_GAP))) + 1; // +1 row buffer
+
+    const grid = [];
+    for (let i = 0; i < cols * rows; i++) {
+      const left = (i % cols) > 0 ? grid[i - 1] : null;
+      const top  = i >= cols ? grid[i - cols] : null;
+      grid.push(pickBackdropTile(withSrc, left, top));
+    }
+
+    backdrop.innerHTML = grid
+      .map(t => `<div class="site-backdrop-tile"><img src="${t.src}" alt="" aria-hidden="true"></div>`)
+      .join('');
+  }
+
   function renderImages(imgData) {
     if (!imgData || !imgData.items || imgData.items.length === 0) return '';
     const cols = imgData.cols || 2;
-    let html = `<div class="image-grid cols-${cols}">`;
+    const widthStyle = imgData.width ? ` style="max-width: ${imgData.width};"` : '';
+    let html = `<div class="image-grid cols-${cols}"${widthStyle}>`;
     for (const img of imgData.items) {
       const ratio = img.ratio || '';
       html += `<div class="image-card ${ratio}">`;
       if (img.src) {
-        html += `<img src="${img.src}" alt="${img.caption || ''}">`;
+        const posStyle = img.position ? ` style="object-position: ${img.position}"` : '';
+        html += `<img src="${img.src}" alt="${img.caption || ''}"${posStyle}>`;
       } else {
         html += imagePlaceholder(ratio);
       }
@@ -359,6 +413,14 @@ const SITE = {
     return `<div class="body-text">${inner}</div>`;
   }
 
+  // ── Site backdrop ────────────────────────────────────────────
+  renderSiteBackdrop(SITE.hero.tiles);
+  let backdropResizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(backdropResizeTimer);
+    backdropResizeTimer = setTimeout(() => renderSiteBackdrop(SITE.hero.tiles), 200);
+  });
+
   // ── Nav ───────────────────────────────────────────────────────
   const navBrand = document.querySelector('.nav-brand');
   navBrand.textContent = SITE.hero.title;
@@ -370,44 +432,145 @@ const SITE = {
     navLinks.appendChild(li);
   }
 
+  // Clicking a nav link should always land at the TOP of that section,
+  // not wherever it was last scrolled to internally (each slide keeps
+  // its own vertical scroll position since it can scroll independently).
+  navLinks.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+    const target = document.getElementById(link.getAttribute('href').slice(1));
+    if (!target) return;
+    e.preventDefault();
+    target.scrollTop = 0;
+    target.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+  });
+
   // ── Hero ──────────────────────────────────────────────────────
   const main = document.getElementById('site-main');
 
-  const hero = el('section', 'hero');
+  const hero = el('section', 'hero slide');
   hero.innerHTML = `
-    <p class="hero-eyebrow">${SITE.hero.eyebrow}</p>
-    <h1>${SITE.hero.title}</h1>
-    ${SITE.hero.hook ? `<p class="hero-hook">${SITE.hero.hook}</p>` : ''}
-    <div class="hero-divider"></div>
-    <p class="hero-desc">${SITE.hero.desc}</p>
-    <div class="hero-meta">
-      <span><strong>${SITE.hero.author}</strong></span>
-      <span>${SITE.hero.program}</span>
-      <span>${SITE.hero.year}</span>
+    <div class="hero-card">
+      <p class="hero-eyebrow">${SITE.hero.eyebrow}</p>
+      <h1>${SITE.hero.title}</h1>
+      ${SITE.hero.hook ? `<p class="hero-hook">${SITE.hero.hook}</p>` : ''}
+      <div class="hero-divider"></div>
+      <p class="hero-desc">${SITE.hero.desc}</p>
+      <div class="hero-meta">
+        <span><strong>${SITE.hero.author}</strong></span>
+        <span>${SITE.hero.program}</span>
+        <span>${SITE.hero.year}</span>
+      </div>
     </div>`;
   main.appendChild(hero);
 
   // ── Sections ──────────────────────────────────────────────────
   for (const sec of SITE.sections) {
+    const slide = el('div', 'slide');
+    slide.id = sec.id;
     const section = el('section', 'section');
-    section.id = sec.id;
 
     let html = '';
     if (sec.label)   html += `<p class="section-label">${sec.label}</p>`;
     if (sec.title)   html += `<h2>${sec.title}</h2>`;
     if (sec.intro)   html += `<p class="section-intro">${sec.intro}</p>`;
+    if (sec.images && sec.imagesPosition === 'afterIntro') html += renderImages(sec.images);
     if (sec.body)    html += renderBody(sec.body);
     if (sec.callout) html += `<blockquote class="callout">${sec.callout}</blockquote>`;
     if (sec.steps)   html += renderSteps(sec.steps);
-    if (sec.images)  html += renderImages(sec.images);
+    if (sec.images && sec.imagesPosition !== 'afterIntro') html += renderImages(sec.images);
     if (sec.videos)  html += renderVideos(sec.videos);
     if (sec.links)   html += renderLinks(sec.links);
 
     section.innerHTML = html;
-    main.appendChild(section);
+    slide.appendChild(section);
+    main.appendChild(slide);
   }
 
   // ── Footer ────────────────────────────────────────────────────
-  document.getElementById('site-footer').textContent = SITE.footer;
+  // A bar spanning the whole site (like the nav), not part of the
+  // horizontal slide sequence — only revealed once the current slide
+  // is scrolled to its bottom.
+  const footerEl = document.getElementById('site-footer');
+  footerEl.textContent = SITE.footer;
+
+  function getActiveSlide() {
+    const mainRect = main.getBoundingClientRect();
+    let active = null;
+    let bestOverlap = -Infinity;
+    document.querySelectorAll('.slide').forEach((slide) => {
+      const r = slide.getBoundingClientRect();
+      const overlap = Math.min(r.right, mainRect.right) - Math.max(r.left, mainRect.left);
+      if (overlap > bestOverlap) { bestOverlap = overlap; active = slide; }
+    });
+    return active;
+  }
+
+  // Keeps the footer's reveal state and the nav's "current section"
+  // indicator both in sync with whichever slide is actually in view.
+  function updateActiveSection() {
+    const active = getActiveSlide();
+    const isHero = !active || active.classList.contains('hero');
+
+    if (isHero) {
+      footerEl.classList.remove('footer-visible');
+    } else {
+      const atBottom = active.scrollTop + active.clientHeight >= active.scrollHeight - 4;
+      footerEl.classList.toggle('footer-visible', atBottom);
+    }
+
+    const activeHref = isHero ? null : `#${active.id}`;
+    navLinks.querySelectorAll('a').forEach((a) => {
+      a.classList.toggle('active', a.getAttribute('href') === activeHref);
+    });
+  }
+  // Capture phase: catches vertical scroll within any .slide as well as
+  // #site-main's own horizontal scroll (scroll events don't bubble).
+  main.addEventListener('scroll', updateActiveSection, true);
+  window.addEventListener('resize', updateActiveSection);
+  updateActiveSection();
+
+  // Once horizontal scrolling has fully settled, reset every slide
+  // EXCEPT the active one back to its top — not done live, so a
+  // slide's content doesn't visibly jump to top while it's still
+  // partway through sliding out of view.
+  function resetInactiveSlides() {
+    const active = getActiveSlide();
+    document.querySelectorAll('.slide').forEach((slide) => {
+      if (slide !== active) slide.scrollTop = 0;
+    });
+  }
+  if ('onscrollend' in window) {
+    // Fires exactly once a scroll (from any input — wheel, trackpad,
+    // scrollbar, keyboard) has fully come to rest, including snapping.
+    main.addEventListener('scrollend', resetInactiveSlides, true);
+  } else {
+    // Fallback for browsers without scrollend: a plain mouse wheel can
+    // send events in spaced-out bursts, so debounce on a pause instead.
+    let settleTimer;
+    main.addEventListener('scroll', () => {
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(resetInactiveSlides, 150);
+    }, true);
+  }
+
+  // ── Horizontal navigation ────────────────────────────────────
+  // Logo click resets to the first slide (native "#" anchor behavior
+  // only affects document scrollTop, not #site-main's scrollLeft).
+  navBrand.addEventListener('click', (e) => {
+    e.preventDefault();
+    main.scrollTo({ left: 0, behavior: 'smooth' });
+  });
+
+  // Left/right arrow keys jump one full slide at a time. Vertical
+  // mouse-wheel motion is intentionally left alone — it only scrolls
+  // within a slide (for tall content) and never advances slides.
+  // Moving between slides requires an actual horizontal gesture
+  // (trackpad swipe, shift+wheel, scrollbar), a nav link, or these
+  // arrow keys.
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') main.scrollBy({ left: main.clientWidth, behavior: 'smooth' });
+    if (e.key === 'ArrowLeft')  main.scrollBy({ left: -main.clientWidth, behavior: 'smooth' });
+  });
 
 })();

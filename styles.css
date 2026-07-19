@@ -7,7 +7,6 @@
   --tan:       #D4B896;
   --tan-light: #EDE5D8;
   --sage:      #7A8F6A;
-  --ink:       #2E1F14;
   --text:      #4A3728;
   --muted:     #8A7060;
   --rule:      rgba(196,103,58,0.2);
@@ -15,15 +14,16 @@
   --serif: Georgia, 'Times New Roman', serif;
   --sans:  'Helvetica Neue', Helvetica, Arial, sans-serif;
 
-  --section-gap: 7rem;
   --content-max: 900px;
+  --card-radius: 18px;
 }
 
 /* ─── Reset ──────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
+html, body { height: 100%; overflow: hidden; }
 body {
-  background: var(--cream);
+  background: var(--tan-light);
   color: var(--text);
   font-family: var(--sans);
   font-size: 17px;
@@ -34,10 +34,38 @@ img { display: block; max-width: 100%; height: auto; }
 a   { color: var(--clay); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
+/* ─── Site backdrop ──────────────────────────────────────────── */
+/* Fixed wallpaper of glaze test tiles behind the whole page — shows
+   through in the gaps between cards and behind the hero. */
+.site-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-auto-rows: 130px;
+  gap: 1.1rem;
+  padding: 1.1rem;
+  background: var(--tan-light);
+  overflow: hidden;
+}
+.site-backdrop-tile {
+  border-radius: 14px;
+  overflow: hidden;
+}
+.site-backdrop-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
+}
+
 /* ─── Nav ────────────────────────────────────────────────────── */
 nav {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   background: rgba(247,243,236,0.92);
   backdrop-filter: blur(8px);
@@ -53,12 +81,14 @@ nav {
   color: var(--earth);
   letter-spacing: 0.01em;
 }
+.nav-brand:hover { color: var(--clay); text-decoration: none; }
 .nav-links {
   display: flex;
   gap: 1.8rem;
   list-style: none;
 }
 .nav-links a {
+  position: relative;
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -67,17 +97,68 @@ nav {
   transition: color 0.2s;
 }
 .nav-links a:hover { color: var(--clay); text-decoration: none; }
+.nav-links a.active { color: var(--clay); }
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.5rem;
+  height: 2px;
+  background: var(--clay);
+  border-radius: 2px;
+}
+
+/* ─── Horizontal scroll container ────────────────────────────── */
+/* The whole site scrolls left-to-right through full-screen slides
+   instead of stacking vertically. #site-main is the one scrollable
+   surface (the outer page never scrolls); each direct child is a
+   .slide sized to exactly one screen. */
+#site-main {
+  margin-top: 3.75rem;
+  height: calc(100vh - 3.75rem);
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+.slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-align: center;
+  display: flex;
+  align-items: safe center;
+  justify-content: safe center;
+  box-sizing: border-box;
+  padding: 2rem;
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* legacy Edge/IE */
+}
+.slide::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+/* Section cards get extra top/bottom breathing room, with the bottom
+   padding reserving space for the reveal-on-scroll footer (3.2rem)
+   so it never overlaps the card. Hero is exempt — footer never shows there. */
+.slide:not(.hero) {
+  padding-top: 4rem;
+  padding-bottom: calc(4rem + 3.2rem);
+}
 
 /* ─── Hero ───────────────────────────────────────────────────── */
-.hero {
-  min-height: 88vh;
+.hero-card {
+  width: 100%;
+  max-width: var(--content-max);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: flex-start;
-  padding: 6rem 2rem 4rem;
-  max-width: var(--content-max);
-  margin: 0 auto;
+  padding: 3.5rem;
+  background: var(--cream);
+  border-radius: var(--card-radius);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.10);
 }
 .hero-eyebrow {
   font-size: 0.78rem;
@@ -120,11 +201,17 @@ nav {
 }
 
 /* ─── Section wrapper ────────────────────────────────────────── */
+/* Each section reads as its own glaze tile — a rounded slab sitting
+   on the darker "shelf" background, catching a soft drop shadow.
+   Each one fills its own full-screen .slide, so sizing/centering is
+   handled by the slide; this is just the card itself. */
 .section {
+  width: 100%;
   max-width: var(--content-max);
-  margin: 0 auto;
-  padding: var(--section-gap) 2rem;
-  border-top: 1px solid var(--rule);
+  padding: 3.5rem;
+  background: var(--cream);
+  border-radius: var(--card-radius);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.10);
 }
 .section-label {
   font-size: 0.72rem;
@@ -278,14 +365,29 @@ nav {
 }
 
 /* ─── Footer ─────────────────────────────────────────────────── */
+/* A bar spanning the whole site, mirroring the nav, but only reveals
+   itself once the current slide is scrolled to its bottom. */
 footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(247,243,236,0.92);
+  backdrop-filter: blur(8px);
   border-top: 1px solid var(--rule);
   text-align: center;
-  padding: 3rem 2rem;
   font-size: 0.82rem;
   color: var(--muted);
   letter-spacing: 0.04em;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
 }
+footer.footer-visible { transform: translateY(0); }
 
 /* ─── Hero hook ──────────────────────────────────────────────── */
 .hero-hook {
@@ -386,4 +488,7 @@ footer {
   .image-grid.cols-3 { grid-template-columns: 1fr; }
   .nav-links { display: none; }
   .hero-meta { flex-direction: column; gap: 0.6rem; }
+  .slide { padding: 1rem; }
+  .slide:not(.hero) { padding-top: 2rem; padding-bottom: calc(2rem + 3.2rem); }
+  .section, .hero-card { padding: 1.8rem; }
 }
