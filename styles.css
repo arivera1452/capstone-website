@@ -76,12 +76,32 @@ nav {
   padding: 0.9rem 2rem;
 }
 .nav-brand {
-  font-family: var(--serif);
-  font-size: 1.1rem;
-  color: var(--earth);
-  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
 }
-.nav-brand:hover { color: var(--clay); text-decoration: none; }
+.nav-logo {
+  height: 3.6rem;
+  width: auto;
+  overflow: visible;
+}
+.nav-brand:hover { text-decoration: none; }
+.nav-logo rect {
+  transition: transform 0.3s ease;
+}
+/* Expand the tiles apart from the midpoint between nav-tile-3 and
+   nav-tile-4 along a straight horizontal line, both directions at once.
+   Each rect sits inside its own 45° rotation (the diamond shape) nested
+   inside the logo's outer -90° rotation (the vertical-to-horizontal
+   flip), so its local coordinate space is rotated -45° relative to the
+   screen. A plain translate(x, 0) here would render on a diagonal —
+   using equal x/y values cancels that -45° out, so the visible result
+   on screen is pure horizontal motion. */
+.nav-brand:hover .nav-tile-1 { transform: translate(-70.7px, -70.7px); }
+.nav-brand:hover .nav-tile-2 { transform: translate(-42.4px, -42.4px); }
+.nav-brand:hover .nav-tile-3 { transform: translate(-14.1px, -14.1px); }
+.nav-brand:hover .nav-tile-4 { transform: translate(14.1px, 14.1px); }
+.nav-brand:hover .nav-tile-5 { transform: translate(42.4px, 42.4px); }
+.nav-brand:hover .nav-tile-6 { transform: translate(70.7px, 70.7px); }
 .nav-links {
   display: flex;
   gap: 1.8rem;
@@ -115,8 +135,8 @@ nav {
    surface (the outer page never scrolls); each direct child is a
    .slide sized to exactly one screen. */
 #site-main {
-  margin-top: 3.75rem;
-  height: calc(100vh - 3.75rem);
+  margin-top: 5.4rem;
+  height: calc(100vh - 5.4rem);
   display: flex;
   flex-direction: row;
   overflow-x: auto;
@@ -242,16 +262,58 @@ nav {
 .image-grid {
   display: grid;
   gap: 1rem;
+  margin-top: 2.5rem;
   margin-bottom: 2.5rem;
 }
 .image-grid.cols-1 { grid-template-columns: 1fr; }
 .image-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
 .image-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.image-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* matchHeight mode: a flex row sharing one height, each image keeping
+   its own natural width/aspect ratio instead of being cropped to fit
+   equal columns. The fixed height lives on the <img> itself (not the
+   card), so a caption below it isn't clipped by the card's
+   overflow:hidden or forced into the same box height as the image. */
+.image-grid.match-height {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: auto;
+}
+.image-grid.match-height .image-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+.image-grid.match-height .image-card img {
+  height: clamp(247.5px, 36vw, 382.5px);
+  width: auto;
+  max-width: none;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+/* width:0 + min-width:100% keeps the caption from forcing the card
+   (and therefore the gap to the next image) wider than the image
+   itself — it wraps to match the image's width instead. */
+.image-grid.match-height .image-caption {
+  width: 0;
+  min-width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  border-top: none;
+}
 
 .image-card {
   background: var(--tan-light);
   border-radius: 4px;
   overflow: hidden;
+}
+.image-grid.bare .image-card {
+  background: transparent;
 }
 .image-card img {
   width: 100%;
@@ -261,6 +323,7 @@ nav {
 .image-card.wide img  { aspect-ratio: 16/9; }
 .image-card.tall img  { aspect-ratio: 3/4; }
 .image-card.square img{ aspect-ratio: 1/1; }
+.image-card.original img { aspect-ratio: auto; object-fit: initial; }
 
 .image-placeholder {
   width: 100%;
@@ -485,7 +548,11 @@ footer.footer-visible { transform: translateY(0); }
 /* ─── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .image-grid.cols-2,
-  .image-grid.cols-3 { grid-template-columns: 1fr; }
+  .image-grid.cols-3,
+  .image-grid.cols-4 { grid-template-columns: 1fr; }
+  .image-grid.match-height { flex-direction: column; }
+  .image-grid.match-height .image-card { width: 100%; }
+  .image-grid.match-height .image-card img { width: 100%; height: 260px; object-fit: cover; }
   .nav-links { display: none; }
   .hero-meta { flex-direction: column; gap: 0.6rem; }
   .slide { padding: 1rem; }

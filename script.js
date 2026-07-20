@@ -45,9 +45,18 @@ const SITE = {
   // Each section can have:
   //   id, label, title, intro, callout,
   //   body    — array of paragraph strings
-  //   steps   — array of { label, detail } objects
-  //   images  — { cols: 1|2|3, width, items: [{ src, caption, ratio, position }] }
+  //   steps   — array of { label, detail, image, images, imagesWidth } objects
+  //             image (optional)  — { src, caption, ratio, position, width },
+  //             a single image rendered inside that step, after its detail text
+  //             images (optional) — array of the same, rendered side by side
+  //             (use image OR images, not both; imagesWidth caps the row's width)
+  //   images  — { cols: 1|2|3|4, width, matchHeight, bare, items: [{ src, caption, ratio, position }] }
   //             width — e.g. "75%", caps the image grid width (left-aligned)
+  //             matchHeight — true: images share one row height, widths
+  //             follow each photo's natural aspect ratio (no cropping,
+  //             ignores per-item ratio). Good for photos of different shapes.
+  //             bare — true: no card background behind the image
+  //             (captions still show if an item has one)
   //   imagesPosition — "afterIntro" to place images between intro and body
   //                    (default places them after callout/steps)
   //   videos  — array of { src, caption }
@@ -55,6 +64,7 @@ const SITE = {
   //   links   — array of { label, href, desc }
   //
   // IMAGE ratio options: "wide" (16/9) | "tall" (3/4) | "square" (1/1)
+  //   | "original" (no cropping — uses the image's own native ratio)
   // Leave src: "" to show a placeholder box.
 
   sections: [
@@ -78,9 +88,8 @@ const SITE = {
       imagesPosition: "afterIntro",
       images: {
         cols: 1,
-        width: "75%",
         items: [
-          { src: "images/CSoM Teaching.jpeg", caption: "Andrew Rivera demonstrating how to glaze at The Clay Studio of Missoula.", ratio:"tall"},
+          { src: "images/CSoM Teaching.png", caption: "Andrew Rivera demonstrating how to glaze at The Clay Studio of Missoula.", ratio:"square"},
         ]
       },
 
@@ -93,33 +102,34 @@ const SITE = {
       label: "02 — Research",
       title: "Relevant Research, Data Collection & User Testing",
 
-      intro: "Overview of the research approach — what methods were used, what data was collected, and what user testing revealed.",
+      intro: "Research for Tiles combined firsthand ceramics experience, a look at existing tools like Pottery Notes and Glazy.org, and direct feedback from real studio users rather than formal academic study. Two rounds of testing at Squeaky Wheel Pottery, one on an early build and one after adding the community board, shaped the app's direction and confirmed what mattered most to the people who would actually use it.",
 
-      body: [
-        "Describe your research here. What existing literature, precedents, or domain knowledge informed the project? What primary research did you conduct?",
-        "Summarize user testing results — what participants did, what they struggled with, and what surprised you.",
-      ],
-
-      steps: [
-        { label: "Desk research",       detail: "Review of relevant literature, existing tools, and domain expertise that framed the project." },
-        { label: "Data collection",     detail: "Describe what data you gathered, how many participants, and the methods used (surveys, interviews, observation, etc.)." },
-        { label: "User testing — round 1", detail: "First round of testing: what you tested, with whom, and the key findings." },
-        { label: "User testing — round 2", detail: "Second round: what changed based on findings, and what new insights emerged." },
-        { label: "Synthesis",           detail: "How you made sense of everything — affinity mapping, thematic analysis, or another method." },
-      ],
-
+      imagesPosition: "afterIntro",
       images: {
-        cols: 3,
+        cols: 1,
         items: [
-          { src: "", caption: "Research session or setup" },
-          { src: "", caption: "Data or notes artifact" },
-          { src: "", caption: "Synthesis document — affinity map, themes, etc." },
+          { src: "images/Screenshot 2026-07-19 at 3.43.52 PM.png", caption: "Squeaky Wheel Pottery Teaching Studio" },
         ]
       },
 
-      videos: [
-        { src: "", caption: "Optional: user testing session clip or research documentation" },
+      body: [
+        "Research for Tiles combined domain expertise, review of adjacent tools, and direct in-studio feedback rather than formal academic study. Desk research drew on two existing apps as inspiration, alongside almost a decade of personal experience in clay studios and teaching. The most valuable research came from watching real potters use the prototype directly. Two rounds of testing were conducted at Squeaky Wheel Pottery: the first with the studio owner, a member, and an instructor on an early build, and the second with ceramics professional Molly Rivera after the community board was added. Round 1 shaped the app's direction, surfacing the need for the community board and ideas around education and materials tracking; round 2 tested and refined that more complete version.",
       ],
+
+      steps: [
+        { label: "Desk research",       detail: "Desk research began with two existing tools as a jumping-off point: Pottery Notes, an app for personal glaze and piece tracking, and Glazy.org, a widely used online glaze recipe database. Both offered useful reference points, from Pottery Notes' approach to logging individual pieces to Glazy's searchable, shared recipe model. This was paired with almost a decade of personal experience in clay studios and teaching ceramics, grounding the project in firsthand familiarity with how a studio documents and shares glaze knowledge.",
+          images: [
+            { src: "images/pottery_notes.webp", caption: "Pottery Notes — reference point for personal glaze and piece tracking", ratio: "tall" },
+            { src: "images/Screenshot 2026-07-19 at 3.27.53 PM.png", caption: "Glazy.org — reference point for a searchable, shared recipe model", ratio:"tall" },
+          ] },
+        { label: "Data collection",     detail: "Feedback was gathered informally, through in-person conversation and observation at Squeaky Wheel Pottery, rather than surveys or structured interviews. A small group of two to five people, including the studio owner, a member, an instructor, and later a ceramics professional reviewer, interacted with the prototype across two rounds. This traded breadth for depth: fewer participants, but feedback rooted in real studio use." },
+        { label: "User testing — round 1", detail: "The first round was conducted with the studio owner, a studio member, and an instructor at Squeaky Wheel Pottery, using an earlier build without real glaze images or the community board. Participants worked through the existing archive and piece tracker as they would in a normal session. The clearest takeaway was the need for a shared, social layer, leading directly to the community board. Participants also raised an educational component and a way to track materials and costs on the admin side.",
+          image: { src: "images/IMG_9066.JPG", caption: "Lexie (Studio Member), Brian (Instructor), and Babett (Squeaky Wheel Pottery Owner)." } },
+        { label: "User testing — round 2", detail: "The second round was conducted with Molly Rivera, a ceramics professional and studio operations manager at Red Wing Arts, after the community board was built and added. This tested how a more complete version of Tiles, now including glaze imagery and the social layer, held up under review from someone with ceramics and studio operations expertise. Feedback was organized into themed clusters and implemented directly into the app.",
+          image: { src: "images/DSC08145.jpg", caption: "Molly Rivera (Subject Matter Expert)", ratio: "tall" } },
+        { label: "Synthesis",           detail: "Feedback was synthesized by identifying recurring themes across both rounds: what people struggled with, what they responded to immediately, and what they asked for unprompted. The core tools were understood quickly, while the social and administrative layers needed more definition. This informal, thematic approach fit the scale of the research: a small, trusted group of real studio users and one outside reviewer, observed and interviewed directly." },
+      ],
+
     },
 
     // ── 03 — Questions & Thoughts ──────────────────────────────
@@ -128,17 +138,22 @@ const SITE = {
       label: "03 — Questions & Thoughts",
       title: "Questions, Thoughts Toward a Solution",
 
-      intro: "The questions that guided the design — and the early thinking that pointed toward an answer.",
+      intro: "The core question behind Tiles was how to make glazing, often the most rushed and confusing part of a ceramics education, easier to understand and reference. That question, rooted in years of watching students struggle with the tile wall and glaze documentation, shaped both the initial concept and its later addition of a shared community space.",
 
       body: [
-        "What were the key questions you were holding as you moved from research into design? What hypotheses did you form? What early directions did you explore and why?",
-        "This is a good place to show your thinking — not just what you decided, but what you were weighing and why certain directions felt promising.",
+        "The central question driving this project was simple to state and hard to solve: how could the process of glazing, and understanding glaze, be made easier and more intuitive for the people actually doing it?",
+
+        "This question came directly out of teaching. Glazing is almost always the last thing covered in a ceramics class, which means a huge amount of information gets crammed into a single session right when students are the most overwhelmed. Paying close attention to where students got stuck, and where I found myself getting caught up too, made two patterns clear. First, the test tile wall itself was a consistent point of confusion. Students didn't know how to read it or use it as a reference. Second, there was a general lack of documentation around glazes and combinations, so even a well-labeled wall only went so far.",
+
+        "Alongside this, I've always told students to keep notes on their pieces, since it can be weeks or longer between applying a glaze and seeing the final result come out of the kiln. That gap between action and outcome is a recurring sticking point in ceramics, and it applies to every glaze session, not just a student's first one.",
+
+        "These observations shaped the early hypothesis behind Tiles: if students and studio members had a convenient, approachable way to reference glazes and combinations, while also tracking their individual pieces from application to finished result, the confusion around glazing could be significantly reduced. User research during the design process reinforced and extended this thinking, and led directly to the addition of the community board, giving students, studio members, and admins a shared space to stay connected and stay current on what's happening in their individual studios.",
       ],
 
       callout: "\"A question that shaped everything, or an early hypothesis that turned out to be right (or wrong) in an interesting way.\"",
 
       images: {
-        cols: 2,
+        cols: 1,
         items: [
           { src: "", caption: "Early sketches or concept explorations" },
           { src: "", caption: "Notes, diagrams, or thinking artifacts" },
@@ -156,17 +171,17 @@ const SITE = {
       label: "04 — Process + Tools",
       title: "Process & Tools",
 
-      intro: "How the work was done — the phases, methods, and tools that shaped the project from concept to completion.",
+      intro: "Tiles moved through four phases, from an early single-file prototype to a fully documented, tested application. The clearest turning point came in Phase 2, when user feedback overturned an initial decision to avoid social features, leading to the community board that now anchors the app's shared studio experience.",
 
       body: [
-        "Walk through your process here. What did each phase involve? What tools did you use and why? Where did the process diverge from what you expected?",
+        "Building and researching Tiles drew on a range of tools across design, development, and research: Figma and Adobe Illustrator for interface design and visual identity, Photoshop for image editing and photo preparation, VS Code and Claude Code for building and iterating on the prototype, and photography to document real test tiles, glaze combinations, and the studio environment itself. On the research side, observational study and interviewing formed the backbone of user feedback throughout. These tools carried the project through four phases, from an early single-file prototype to a fully tested and documented application.",
       ],
 
       steps: [
-        { label: "Phase 1 — [Name]",   detail: "Describe what happened in this phase and the tools or methods used. Example: Figma, paper sketches, Miro, etc." },
-        { label: "Phase 2 — [Name]",   detail: "Describe this phase. What changed from the previous phase? What decisions were made?" },
-        { label: "Phase 3 — [Name]",   detail: "Continue tracing the process. Include pivots, dead ends, or unexpected discoveries." },
-        { label: "Phase 4 — [Name]",   detail: "Final phase leading to deliverables. What tools brought it to completion?" },
+        { label: "Prototype",   detail: "The project began with a single-file HTML, CSS, and JavaScript prototype, chosen deliberately to allow fast iteration without the overhead of a full development environment or backend infrastructure. This phase focused on building the core of Tiles: a test tile archive and an early piece tracker. Figma and Adobe Illustrator were used to establish the visual identity and interface direction, Claude Code supported development throughout, and GitHub was used for version control and progress tracking." },
+        { label: "Feedback & Divergence",   detail: "The first round of user testing at Squeaky Wheel Pottery surfaced a clear gap in the prototype: the need for a shared, social space. This was where the process diverged most from the original plan. Social features had deliberately been left out early on, out of concern that Tiles would turn into social media for pottery, something noisy and disconnected from the actual work. After hearing directly from multiple users, it became clear that a small, controlled social environment, limited strictly to the studio someone belongs to, was actually important, not a distraction. That shift led to building the community board, tying posts to individual studios and giving members, instructors, and admins a shared space to stay connected." },
+        { label: "Refinement",   detail: "With the community board added, the second round of testing brought in ceramics professional Molly Rivera to review the more complete prototype, now including real glaze imagery alongside the new social layer. Feedback from this round was organized into themed clusters and implemented directly into the app, refining both the existing tools and the newly added community features." },
+        { label: "Delivery",   detail: "The final phase focused on polish, documentation, and the deliverables themselves: refining the prototype based on all rounds of feedback, building the companion case study website using a config-driven structure hosted on GitHub Pages, and preparing final presentation materials. WordPress was used throughout to document progress in a running blog, and the case study site now serves as the portfolio-facing record of the entire process." },
       ],
 
       images: {
@@ -192,28 +207,32 @@ const SITE = {
       label: "05 — Deliverables",
       title: "Deliverables",
 
-      intro: "The final outputs of the project — what was made, what it demonstrates, and how it connects to the original problem.",
+      intro: "Tiles addresses the original problem through four interconnected parts, each solving a distinct piece of daily studio life. Together they move the project from a single fix for the test tile wall into a tool built for how a studio actually runs.",
+
+      imagesPosition: "afterIntro",
+      images: {
+        matchHeight: true,
+        bare: true,
+        cols: 4,
+        items: [
+          { src: "images/glazemixer_feedback_updates.png", caption: "Glaze Mixer & Test Tile Archive" },
+          { src: "images/piecetracker_savebutton.png", caption: "Piece Tracker" },
+          { src: "images/communityboard_search_icons.png", caption: "Community Board" },
+          { src: "images/studio-management.png", caption: "Studio Management Backend" },
+
+        ]
+      },
 
       body: [
-        "Describe each deliverable here. What is it? Who is it for? How does it solve the problem identified at the start?",
-        "Be specific about what exists — a prototype, a system, a physical object, a report, a set of guidelines, or something else entirely.",
+        "Tiles is made up of four interconnected parts, each built to address a specific piece of the original problem while working together as one cohesive tool. The glaze mixer and test tile archive takes the physical wall itself and puts it in members' hands, searchable and accessible from anywhere. The piece tracker closes the gap between applying a glaze and seeing the finished result, giving members a place to document their work as it moves through each stage. The community board extends that same accessibility to the studio's people, not just its information, creating a shared space for members, instructors, and admins to stay connected. And the studio management backend ties it all together, giving whoever runs the studio a way to keep that studio's information accurate and its membership current. Together, these four parts turn Tiles from a single fix into a tool a studio can rely on day to day.",
       ],
 
       steps: [
-        { label: "Deliverable 1 — [Name]", detail: "Describe this deliverable, what it is, and why it matters to the project." },
-        { label: "Deliverable 2 — [Name]", detail: "Describe this deliverable." },
-        { label: "Deliverable 3 — [Name]", detail: "Describe this deliverable." },
+        { label: "Glaze Mixer & Test Tile Archive", detail: "This is the digital version of the studio's test tile wall, put directly in members' hands. Users can browse the full range of glaze options available to their studio, look through individual glazes, and see how different combinations actually turn out when layered together. Instead of scanning a physical wall for a specific combination, members can search and reference the same information from anywhere, on their own device." },
+        { label: "Piece Tracker", detail: "The piece tracker documents an individual piece from start to finish, following the four main stages of ceramics: greenware, bisque, glaze, and fired. At each stage, users can archive photographs and notes, building a running record of a piece as it moves through the process. A progress bar gives an at-a-glance view of where a piece currently stands, closing the gap between applying a glaze and seeing the final result weeks later." },
+        { label: "Community Board", detail: "The community board gives studio members, instructors, and admins a shared space to stay connected, tied specifically to the studio they belong to. Members can post directly, including text, images, and links to specific pieces from the piece tracker, keeping conversation grounded in real, in-progress work rather than existing as a separate, disconnected feed." },
+        { label: "Studio Management Backend", detail: "This is the administrative layer, available to whoever sets up and runs a studio within the app. Studio owners and admins can add information about their studio, generate and share a join code that lets members access that specific studio, and update the glazes that appear in the glaze mixer for their members to browse. This keeps each studio's information self-contained and accurate, managed directly by the people running it." },
       ],
-
-      images: {
-        cols: 2,
-        items: [
-          { src: "", caption: "Deliverable — final state", ratio: "wide" },
-          { src: "", caption: "Deliverable detail or feature", ratio: "wide" },
-          { src: "", caption: "Second deliverable or alternate view" },
-          { src: "", caption: "Context of use or final presentation" },
-        ]
-      },
 
       videos: [
         { src: "", caption: "Optional: final demo, walkthrough, or presentation recording" },
@@ -226,11 +245,16 @@ const SITE = {
       label: "06 — Summary",
       title: "Summary",
 
-      intro: "What was made, what was learned, and what this project represents.",
+      intro: "What emerged went further than expected, revealing along the way how much design and ceramics actually have in common, and how much a quieter corner of the arts community wanted a shared space of its own.",
 
       body: [
-        "Summarize the project — the problem, the process, and the outcome. What did you set out to do, and what did you actually make?",
-        "Reflect on what surprised you, what you'd do differently, and what this experience revealed about your practice as a designer.",
+        "Tiles set out to solve a specific, practice-based problem: the physical test tile wall found in most pottery studios, valuable but overwhelming, accessible only in person, and permanently lost if a tile breaks. What actually got made was a working prototype that goes beyond that original problem: a digital glaze archive, a piece tracker, a community board, and a studio management backend, all built and refined through direct feedback from real studio users at Squeaky Wheel Pottery.",
+
+        "The biggest surprise throughout the process was how much people wanted a social aspect added to the project. Having worked in community studios and alongside plenty of artists, the assumption going in was that most people in the arts like to share and talk. But there's also a quieter, more introverted side to that community, one this project's designer knows firsthand. The community board ended up answering a need that wasn't part of the original plan: an easier way to open a conversation before, or instead of, talking in person.",
+
+        "Looking back, the clearest thing to do differently would be more user research. More interviews, more observation, more time spent watching people actually use the tool. The condensed timeline of a summer semester made it difficult to fit in as much of that as this kind of project deserves, and a longer runway would have surfaced even more of what shaped the community board and piece tracker.",
+
+        "More than anything, this project revealed how much crossover actually exists between design and ceramics, and how easy it is to overlook what's right in front of you. This wasn't a hypothetical problem; it was one personally lived with for years before it became a project. That experience reinforced a belief that the best design comes from genuinely understanding a problem at its root, not just observing it from the outside. And even where the problem was personal, working with other people throughout this process was a reminder that asking good questions and understanding someone else's point of view matters just as much as understanding your own.",
       ],
 
       callout: "\"A closing thought — something you want a reader to leave with after seeing this work.\"",
@@ -243,10 +267,9 @@ const SITE = {
       },
 
       links: [
-        { label: "Progress Platform",         href: "#", desc: "Documentation of ongoing work throughout the semester" },
+        { label: "Progress Platform",         href: "https://tiles.blog", desc: "Documentation of ongoing work throughout the semester" },
         { label: "Works Cited / Bibliography", href: "#", desc: "All research sources and references" },
-        { label: "Capstone Project",           href: "#", desc: "The final project — prototype, app, or deliverable" },
-        { label: "Additional Link",            href: "#", desc: "Anything else that needs to be connected" },
+        { label: "Capstone Project",           href: "https://arivera1452.github.io/glaze-mixer/", desc: "The final project — prototype, app, or deliverable" },
       ],
     },
 
@@ -318,9 +341,10 @@ const SITE = {
     if (!imgData || !imgData.items || imgData.items.length === 0) return '';
     const cols = imgData.cols || 2;
     const widthStyle = imgData.width ? ` style="max-width: ${imgData.width};"` : '';
-    let html = `<div class="image-grid cols-${cols}"${widthStyle}>`;
+    const gridClass = (imgData.matchHeight ? 'match-height' : `cols-${cols}`) + (imgData.bare ? ' bare' : '');
+    let html = `<div class="image-grid ${gridClass}"${widthStyle}>`;
     for (const img of imgData.items) {
-      const ratio = img.ratio || '';
+      const ratio = imgData.matchHeight ? '' : (img.ratio || '');
       html += `<div class="image-card ${ratio}">`;
       if (img.src) {
         const posStyle = img.position ? ` style="object-position: ${img.position}"` : '';
@@ -400,6 +424,8 @@ const SITE = {
           <div class="step-body">
             <div class="step-label">${s.label}</div>
             <div class="step-detail">${s.detail}</div>
+            ${s.image ? renderImages({ cols: 1, width: s.image.width, items: [s.image] }) : ''}
+            ${s.images ? renderImages({ cols: s.images.length, width: s.imagesWidth, items: s.images }) : ''}
           </div>
         </div>`;
     });
@@ -423,7 +449,31 @@ const SITE = {
 
   // ── Nav ───────────────────────────────────────────────────────
   const navBrand = document.querySelector('.nav-brand');
-  navBrand.textContent = SITE.hero.title;
+  // Inlined (not <img src>) so the individual tiles are real DOM nodes
+  // that CSS can animate apart on hover — see .nav-brand:hover in styles.css.
+  // 6-tile logomark — nav-tile-1 is leftmost at rest.
+  navBrand.innerHTML = `
+    <svg class="nav-logo" viewBox="0 0 729.65 413.63" role="img" aria-label="${SITE.hero.title}">
+      <defs>
+        <style>
+          .nav-tile-1 { fill: #5C2912; }
+          .nav-tile-1, .nav-tile-2, .nav-tile-3, .nav-tile-4, .nav-tile-5, .nav-tile-6 { opacity: .9; }
+          .nav-tile-2 { fill: #9E4E28; }
+          .nav-tile-3 { fill: #C4673A; }
+          .nav-tile-4 { fill: #D67F52; }
+          .nav-tile-5 { fill: #E3A277; }
+          .nav-tile-6 { fill: #F2CBA8; }
+        </style>
+      </defs>
+      <g transform="translate(0,413.63) rotate(-90)">
+        <g transform="translate(430.27 6.89) rotate(45)"><rect class="nav-tile-6" x="50.31" y="366.34" width="313.01" height="313.01" rx="35.04" ry="35.04"/></g>
+        <g transform="translate(385.58 -11.62) rotate(45)"><rect class="nav-tile-5" x="50.31" y="303.13" width="313.01" height="313.01" rx="35.04" ry="35.04"/></g>
+        <g transform="translate(340.89 -30.13) rotate(45)"><rect class="nav-tile-4" x="50.31" y="239.92" width="313.01" height="313.01" rx="35.04" ry="35.04"/></g>
+        <g transform="translate(296.2 -48.64) rotate(45)"><rect class="nav-tile-3" x="50.31" y="176.72" width="313.01" height="313.01" rx="35.04" ry="35.04"/></g>
+        <g transform="translate(251.51 -67.15) rotate(45)"><rect class="nav-tile-2" x="50.31" y="113.51" width="313.01" height="313.01" rx="35.04" ry="35.04"/></g>
+        <g transform="translate(206.82 -85.67) rotate(45)"><rect class="nav-tile-1" x="50.31" y="50.31" width="313.01" height="313.01" rx="35.04" ry="35.04"/></g>
+      </g>
+    </svg>`;
 
   const navLinks = document.querySelector('.nav-links');
   for (const link of SITE.nav) {
