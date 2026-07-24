@@ -268,7 +268,7 @@ const SITE = {
 
       links: [
         { label: "Progress Platform",         href: "https://tiles.blog", desc: "Documentation of ongoing work throughout the semester" },
-        { label: "Works Cited / Bibliography", href: "#", desc: "All research sources and references" },
+        { label: "Works Cited / Bibliography", href: "https://docs.google.com/document/d/1vlw7-nrYTQnguVd-KrGNKYAbY60mJiw-CPaZL67O1aw/edit?usp=sharing", desc: "All research sources and references" },
         { label: "Capstone Project",           href: "https://arivera1452.github.io/glaze-mixer/", desc: "The final project — prototype, app, or deliverable" },
       ],
     },
