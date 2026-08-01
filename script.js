@@ -50,7 +50,8 @@ const SITE = {
   //             a single image rendered inside that step, after its detail text
   //             images (optional) — array of the same, rendered side by side
   //             (use image OR images, not both; imagesWidth caps the row's width)
-  //   images  — { cols: 1|2|3|4, width, matchHeight, bare, items: [{ src, caption, ratio, position }] }
+  //   images  — { cols: 1|2|3|4, width, matchHeight, bare, items: [{ src, caption, link, ratio, position }] }
+  //             link (optional) — makes the caption a clickable link (e.g. source credit)
   //             width — e.g. "75%", caps the image grid width (left-aligned)
   //             matchHeight — true: images share one row height, widths
   //             follow each photo's natural aspect ratio (no cropping,
@@ -89,7 +90,7 @@ const SITE = {
       images: {
         cols: 1,
         items: [
-          { src: "images/CSoM Teaching.png", caption: "Andrew Rivera demonstrating how to glaze at The Clay Studio of Missoula.", ratio:"square"},
+          { src: "images/LincolnSquarePotteryStudioLearningCenter_GlazeTileWall_glazeWall_PotteryStudio+Organization-chicago-pottery-studio-access-clay-glazes-wheels-PotteryWheel-Handbuilding-Lincolnsquarepotterystudiolearningcenter.webp", caption: "Source: LSPS-LC's Glaze Test Tile Wall", link: "https://www.comeplaywithclay.com/featured-artists/lsps-lcs-glaze-test-tile-wall" },
         ]
       },
 
@@ -140,6 +141,14 @@ const SITE = {
 
       intro: "The core question behind Tiles was how to make glazing, often the most rushed and confusing part of a ceramics education, easier to understand and reference. That question, rooted in years of watching students struggle with the tile wall and glaze documentation, shaped both the initial concept and its later addition of a shared community space.",
 
+      imagesPosition: "afterIntro",
+      images: {
+        cols: 1,
+        items: [
+          { src: "images/CSoM Teaching.png", caption: "Andrew Rivera demonstrating how to glaze at The Clay Studio of Missoula.", ratio:"square" },
+        ]
+      },
+
       body: [
         "The central question driving this project was simple to state and hard to solve: how could the process of glazing, and understanding glaze, be made easier and more intuitive for the people actually doing it?",
 
@@ -151,16 +160,6 @@ const SITE = {
       ],
 
       callout: "\"A question that shaped everything, or an early hypothesis that turned out to be right (or wrong) in an interesting way.\"",
-
-      images: {
-        cols: 1,
-        items: [
-          { src: "", caption: "Early sketches or concept explorations" },
-          { src: "", caption: "Notes, diagrams, or thinking artifacts" },
-          { src: "", caption: "Comparative analysis or precedent study" },
-          { src: "", caption: "Early direction or concept" },
-        ]
-      },
 
       steps: [],
     },
@@ -352,7 +351,12 @@ const SITE = {
       } else {
         html += imagePlaceholder(ratio);
       }
-      if (img.caption) html += `<p class="image-caption">${img.caption}</p>`;
+      if (img.caption) {
+        const captionInner = img.link
+          ? `<a href="${img.link}" target="_blank" rel="noopener">${img.caption}</a>`
+          : img.caption;
+        html += `<p class="image-caption">${captionInner}</p>`;
+      }
       html += `</div>`;
     }
     html += `</div>`;
