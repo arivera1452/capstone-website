@@ -3,6 +3,14 @@
 // You never need to touch index.html or styles.css.
 // ═══════════════════════════════════════════════════════════════
 
+// Shown at the bottom of every section (see `links: PROJECT_LINKS` below)
+// so these stay reachable no matter which page a reader lands on.
+const PROJECT_LINKS = [
+  { label: "Progress Platform",          href: "https://tiles.blog", desc: "Documentation of ongoing work throughout the semester" },
+  { label: "Works Cited / Bibliography", href: "https://docs.google.com/document/d/1vlw7-nrYTQnguVd-KrGNKYAbY60mJiw-CPaZL67O1aw/edit?usp=sharing", desc: "All research sources and references" },
+  { label: "Capstone Project",           href: "https://arivera1452.github.io/glaze-mixer/", desc: "The final project — prototype, app, or deliverable" },
+];
+
 const SITE = {
 
   // ── Hero ──────────────────────────────────────────────────────
@@ -10,7 +18,7 @@ const SITE = {
     eyebrow:  "MCAD Capstone 2026",
     title:    "Tiles",
     hook:     "The entire studio in your pocket.",
-    desc:     "A studio management app that replaces the physical glaze test tile wall with a searchable, shared digital archive. Combining a glaze mixer, piece tracker, and community board in one tool. It's built for ceramics studios and their members, from new students to longtime potters, who rely on collective glaze knowledge that's usually scattered across shelves, physical tiles, and notebooks. Tiles makes that portable, permanent, and accessible to everyone in the studio, not just the people who've been there long enough to know where to look.",
+    desc:     "A studio management app that enhances the physical glaze test tile wall with a searchable and shared digital archive. Combining a glaze mixer, piece tracker, community board, and studio management in one tool. It's built for ceramics studios and their members, from new students to longtime potters, who rely on collective glaze knowledge that's usually scattered across shelves, physical tiles, and notebooks. Tiles makes that accessible to everyone whenever and wherever.",
     author:   "Andrew Rivera",
     program:  "User Experience Design",
     year:     "2026",
@@ -43,14 +51,14 @@ const SITE = {
 
   // ── Sections ──────────────────────────────────────────────────
   // Each section can have:
-  //   id, label, title, intro, callout,
+  //   id, label, title, intro,
   //   body    — array of paragraph strings
   //   steps   — array of { label, detail, image, images, imagesWidth } objects
   //             image (optional)  — { src, caption, ratio, position, width },
   //             a single image rendered inside that step, after its detail text
   //             images (optional) — array of the same, rendered side by side
   //             (use image OR images, not both; imagesWidth caps the row's width)
-  //   images  — { cols: 1|2|3|4, width, matchHeight, bare, items: [{ src, caption, link, ratio, position }] }
+  //   images  — { cols: 1|2|3|4, width, matchHeight, bare, groupCaption, items: [{ src, caption, link, ratio, position }] }
   //             link (optional) — makes the caption a clickable link (e.g. source credit)
   //             width — e.g. "75%", caps the image grid width (left-aligned)
   //             matchHeight — true: images share one row height, widths
@@ -58,8 +66,18 @@ const SITE = {
   //             ignores per-item ratio). Good for photos of different shapes.
   //             bare — true: no card background behind the image
   //             (captions still show if an item has one)
-  //   imagesPosition — "afterIntro" to place images between intro and body
-  //                    (default places them after callout/steps)
+  //             groupCaption — one caption string shown below the whole
+  //             grid instead of a caption under each image (per-item
+  //             captions are hidden when this is set; item.caption still
+  //             sets each <img>'s alt text)
+  //   imagesPosition — "afterIntro" to place images between intro and body,
+  //                    "afterBody" to place them right after the body
+  //                    paragraphs (default places them after steps)
+  //   introImage — same shape as images, rendered right after intro (before body)
+  //   introVideo — same shape as videos, rendered right after introImage,
+  //                still before body
+  //   bottomImages — same shape as images, rendered right after the main
+  //                  images block (after steps)
   //   videos  — array of { src, caption }
   //             src: YouTube URL, local file path, or "" for placeholder
   //   links   — array of { label, href, desc }
@@ -84,8 +102,6 @@ const SITE = {
         "That knowledge also exists in only one place. The wall can only be consulted while physically present in the studio, with no way to reference it from home. This limits when and how members can plan their work, and it leaves the studio's collective knowledge inaccessible the moment someone steps outside its walls. The physical format introduces a second limitation as well. Because each tile is a singular, unrepeatable object, damage is permanent. If a tile is dropped or broken and there is no digital record to fall back on. The glaze must be remixed, a new tile must be fired, and the studio must wait for the kiln before that information exists again. A photographic archive would eliminate this risk entirely.",
       ],
 
-      callout: "\"A pull quote that captures the heart of the problem — could be something a user said, a striking statistic, or your own framing.\"",
-
       imagesPosition: "afterIntro",
       images: {
         cols: 1,
@@ -95,6 +111,8 @@ const SITE = {
       },
 
       steps: [],
+
+      links: PROJECT_LINKS,
     },
 
     // ── 02 — Research ──────────────────────────────────────────
@@ -131,6 +149,7 @@ const SITE = {
         { label: "Synthesis",           detail: "Feedback was synthesized by identifying recurring themes across both rounds: what people struggled with, what they responded to immediately, and what they asked for unprompted. The core tools were understood quickly, while the social and administrative layers needed more definition. This informal, thematic approach fit the scale of the research: a small, trusted group of real studio users and one outside reviewer, observed and interviewed directly." },
       ],
 
+      links: PROJECT_LINKS,
     },
 
     // ── 03 — Questions & Thoughts ──────────────────────────────
@@ -159,9 +178,9 @@ const SITE = {
         "These observations shaped the early hypothesis behind Tiles: if students and studio members had a convenient, approachable way to reference glazes and combinations, while also tracking their individual pieces from application to finished result, the confusion around glazing could be significantly reduced. User research during the design process reinforced and extended this thinking, and led directly to the addition of the community board, giving students, studio members, and admins a shared space to stay connected and stay current on what's happening in their individual studios.",
       ],
 
-      callout: "\"A question that shaped everything, or an early hypothesis that turned out to be right (or wrong) in an interesting way.\"",
-
       steps: [],
+
+      links: PROJECT_LINKS,
     },
 
     // ── 04 — Process + Tools ───────────────────────────────────
@@ -170,10 +189,19 @@ const SITE = {
       label: "04 — Process + Tools",
       title: "Process & Tools",
 
-      intro: "Tiles moved through four phases, from an early single-file prototype to a fully documented, tested application. The clearest turning point came in Phase 2, when user feedback overturned an initial decision to avoid social features, leading to the community board that now anchors the app's shared studio experience.",
+      intro: "Tiles moved through four phases. The clearest turning point came in Phase 2, when user feedback overturned an initial decision to avoid social features, leading to the community board that now anchors the app's shared studio experience.",
+
+      introImage: {
+        cols: 1,
+        items: [
+          { src: "images/Screenshot 2026-08-03 at 10.20.12 AM.png", caption: "Logo iteration in Adobe Illustrator", ratio:"original" },
+          { src: "images/Screenshot 2026-07-28 at 5.40.29 PM.png", caption: "Original glaze mixer prototype made in p5.js", ratio:"square" },
+          { src: "images/Screenshot 2026-08-03 at 10.21.02 AM.png", caption: "Glaze Mixer Javascript file in VSCode",ratio:"original" },
+        ]
+      },
 
       body: [
-        "Building and researching Tiles drew on a range of tools across design, development, and research: Figma and Adobe Illustrator for interface design and visual identity, Photoshop for image editing and photo preparation, VS Code and Claude Code for building and iterating on the prototype, and photography to document real test tiles, glaze combinations, and the studio environment itself. On the research side, observational study and interviewing formed the backbone of user feedback throughout. These tools carried the project through four phases, from an early single-file prototype to a fully tested and documented application.",
+        "Building and researching Tiles drew on a range of tools across design, development, and research: Figma and Adobe Illustrator for interface design and visual identity, Photoshop for image editing and photo preparation, VS Code and Claude Code for building and iterating on the prototype, and photography to document real test tiles, glaze combinations, and the studio environment itself. On the research side, observational study and interviewing formed the backbone of user feedback throughout. These tools carried the project through four phases.",
       ],
 
       steps: [
@@ -183,21 +211,20 @@ const SITE = {
         { label: "Delivery",   detail: "The final phase focused on polish, documentation, and the deliverables themselves: refining the prototype based on all rounds of feedback, building the companion case study website using a config-driven structure hosted on GitHub Pages, and preparing final presentation materials. WordPress was used throughout to document progress in a running blog, and the case study site now serves as the portfolio-facing record of the entire process." },
       ],
 
-      images: {
+      bottomImages: {
         cols: 3,
+        groupCaption: "Early logo development for Tiles.",
         items: [
-          { src: "", caption: "Early process artifact" },
-          { src: "", caption: "Mid-process — iteration or testing" },
-          { src: "", caption: "Tool screenshot or working file" },
-          { src: "", caption: "In-progress work" },
-          { src: "", caption: "Version comparison or iteration" },
-          { src: "", caption: "Process documentation" },
+          { src: "images/tiles_logo_Logo_Full.png", caption: "Early process artifact", ratio:"square" },
+          { src: "images/tiles_logo_Logo_Mobile.png", caption: "Mid-process — iteration or testing", ratio:"square" },
+          { src: "images/tiles_logo_Outlines.png", caption: "Tool screenshot or working file", ratio:"square" },
+          { src: "images/tiles_logo-05.png", caption: "In-progress work", ratio:"square" },
+          { src: "images/tiles_logo-06.png", caption: "Version comparison or iteration", ratio:"square" },
+          { src: "images/tiles_logo-07.png", caption: "Process documentation", ratio:"square" },
         ]
       },
 
-      videos: [
-        { src: "", caption: "Optional: process walkthrough or prototype demo" },
-      ],
+      links: PROJECT_LINKS,
     },
 
     // ── 05 — Deliverables ──────────────────────────────────────
@@ -208,7 +235,15 @@ const SITE = {
 
       intro: "Tiles addresses the original problem through four interconnected parts, each solving a distinct piece of daily studio life. Together they move the project from a single fix for the test tile wall into a tool built for how a studio actually runs.",
 
-      imagesPosition: "afterIntro",
+      introVideo: [
+        { src: "images/walkthrough.mov", caption: "" },
+      ],
+
+      body: [
+        "Tiles is made up of four interconnected parts, each built to address a specific piece of the original problem while working together as one cohesive tool. The glaze mixer and test tile archive takes the physical wall itself and puts it in members' hands, searchable and accessible from anywhere. The piece tracker closes the gap between applying a glaze and seeing the finished result, giving members a place to document their work as it moves through each stage. The community board extends that same accessibility to the studio's people, not just its information, creating a shared space for members, instructors, and admins to stay connected. And the studio management backend ties it all together, giving whoever runs the studio a way to keep that studio's information accurate and its membership current. Together, these four parts turn Tiles from a single fix into a tool a studio can rely on day to day.",
+      ],
+
+      imagesPosition: "afterBody",
       images: {
         matchHeight: true,
         bare: true,
@@ -222,10 +257,6 @@ const SITE = {
         ]
       },
 
-      body: [
-        "Tiles is made up of four interconnected parts, each built to address a specific piece of the original problem while working together as one cohesive tool. The glaze mixer and test tile archive takes the physical wall itself and puts it in members' hands, searchable and accessible from anywhere. The piece tracker closes the gap between applying a glaze and seeing the finished result, giving members a place to document their work as it moves through each stage. The community board extends that same accessibility to the studio's people, not just its information, creating a shared space for members, instructors, and admins to stay connected. And the studio management backend ties it all together, giving whoever runs the studio a way to keep that studio's information accurate and its membership current. Together, these four parts turn Tiles from a single fix into a tool a studio can rely on day to day.",
-      ],
-
       steps: [
         { label: "Glaze Mixer & Test Tile Archive", detail: "This is the digital version of the studio's test tile wall, put directly in members' hands. Users can browse the full range of glaze options available to their studio, look through individual glazes, and see how different combinations actually turn out when layered together. Instead of scanning a physical wall for a specific combination, members can search and reference the same information from anywhere, on their own device." },
         { label: "Piece Tracker", detail: "The piece tracker documents an individual piece from start to finish, following the four main stages of ceramics: greenware, bisque, glaze, and fired. At each stage, users can archive photographs and notes, building a running record of a piece as it moves through the process. A progress bar gives an at-a-glance view of where a piece currently stands, closing the gap between applying a glaze and seeing the final result weeks later." },
@@ -233,9 +264,7 @@ const SITE = {
         { label: "Studio Management Backend", detail: "This is the administrative layer, available to whoever sets up and runs a studio within the app. Studio owners and admins can add information about their studio, generate and share a join code that lets members access that specific studio, and update the glazes that appear in the glaze mixer for their members to browse. This keeps each studio's information self-contained and accurate, managed directly by the people running it." },
       ],
 
-      videos: [
-        { src: "", caption: "Optional: final demo, walkthrough, or presentation recording" },
-      ],
+      links: PROJECT_LINKS,
     },
 
     // ── 06 — Summary ───────────────────────────────────────────
@@ -256,20 +285,15 @@ const SITE = {
         "More than anything, this project revealed how much crossover actually exists between design and ceramics, and how easy it is to overlook what's right in front of you. This wasn't a hypothetical problem; it was one personally lived with for years before it became a project. That experience reinforced a belief that the best design comes from genuinely understanding a problem at its root, not just observing it from the outside. And even where the problem was personal, working with other people throughout this process was a reminder that asking good questions and understanding someone else's point of view matters just as much as understanding your own.",
       ],
 
-      callout: "\"A closing thought — something you want a reader to leave with after seeing this work.\"",
-
+      imagesPosition: "afterIntro",
       images: {
         cols: 1,
         items: [
-          { src: "", caption: "Final project image, presentation photo, or closing visual", ratio: "wide" },
+          { src: "images/20251116_121129.png", caption: "Terra sigillata test tiles from Rhonda Willers' workshop at Red Wing Arts" },
         ]
       },
 
-      links: [
-        { label: "Progress Platform",         href: "https://tiles.blog", desc: "Documentation of ongoing work throughout the semester" },
-        { label: "Works Cited / Bibliography", href: "https://docs.google.com/document/d/1vlw7-nrYTQnguVd-KrGNKYAbY60mJiw-CPaZL67O1aw/edit?usp=sharing", desc: "All research sources and references" },
-        { label: "Capstone Project",           href: "https://arivera1452.github.io/glaze-mixer/", desc: "The final project — prototype, app, or deliverable" },
-      ],
+      links: PROJECT_LINKS,
     },
 
   ], // ← end sections
@@ -351,7 +375,7 @@ const SITE = {
       } else {
         html += imagePlaceholder(ratio);
       }
-      if (img.caption) {
+      if (img.caption && !imgData.groupCaption) {
         const captionInner = img.link
           ? `<a href="${img.link}" target="_blank" rel="noopener">${img.caption}</a>`
           : img.caption;
@@ -360,6 +384,9 @@ const SITE = {
       html += `</div>`;
     }
     html += `</div>`;
+    if (imgData.groupCaption) {
+      html += `<p class="image-caption image-group-caption">${imgData.groupCaption}</p>`;
+    }
     return html;
   }
 
@@ -391,7 +418,7 @@ const SITE = {
               allowfullscreen></iframe>
           </div>`;
         } else {
-          html += `<video controls class="video-native" src="${v.src}"></video>`;
+          html += `<video class="video-native" src="${v.src}" autoplay loop muted playsinline></video>`;
         }
       }
       if (v.caption) html += `<p class="image-caption">${v.caption}</p>`;
@@ -529,10 +556,13 @@ const SITE = {
     if (sec.title)   html += `<h2>${sec.title}</h2>`;
     if (sec.intro)   html += `<p class="section-intro">${sec.intro}</p>`;
     if (sec.images && sec.imagesPosition === 'afterIntro') html += renderImages(sec.images);
+    if (sec.introImage) html += renderImages(sec.introImage);
+    if (sec.introVideo) html += renderVideos(sec.introVideo);
     if (sec.body)    html += renderBody(sec.body);
-    if (sec.callout) html += `<blockquote class="callout">${sec.callout}</blockquote>`;
+    if (sec.images && sec.imagesPosition === 'afterBody') html += renderImages(sec.images);
     if (sec.steps)   html += renderSteps(sec.steps);
-    if (sec.images && sec.imagesPosition !== 'afterIntro') html += renderImages(sec.images);
+    if (sec.images && sec.imagesPosition !== 'afterIntro' && sec.imagesPosition !== 'afterBody') html += renderImages(sec.images);
+    if (sec.bottomImages) html += renderImages(sec.bottomImages);
     if (sec.videos)  html += renderVideos(sec.videos);
     if (sec.links)   html += renderLinks(sec.links);
 
@@ -540,6 +570,17 @@ const SITE = {
     slide.appendChild(section);
     main.appendChild(slide);
   }
+
+  // Self-hosted videos start at a 16/9 placeholder box (see .video-native
+  // in styles.css); once the browser reads the file's real dimensions,
+  // switch the box to that ratio instead of stretching/letterboxing.
+  main.querySelectorAll('video.video-native').forEach((video) => {
+    video.addEventListener('loadedmetadata', () => {
+      if (video.videoWidth && video.videoHeight) {
+        video.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+      }
+    });
+  });
 
   // ── Footer ────────────────────────────────────────────────────
   // A bar spanning the whole site (like the nav), not part of the
@@ -562,6 +603,7 @@ const SITE = {
 
   // Keeps the footer's reveal state and the nav's "current section"
   // indicator both in sync with whichever slide is actually in view.
+  let lastActiveSlideId = null;
   function updateActiveSection() {
     const active = getActiveSlide();
     const isHero = !active || active.classList.contains('hero');
@@ -577,6 +619,20 @@ const SITE = {
     navLinks.querySelectorAll('a').forEach((a) => {
       a.classList.toggle('active', a.getAttribute('href') === activeHref);
     });
+
+    // Restart any self-hosted video in a slide from the beginning each
+    // time that slide becomes the active one (horizontal scroll only
+    // fires this on slide change, not on vertical scroll within a slide).
+    const activeId = active ? active.id : null;
+    if (activeId !== lastActiveSlideId) {
+      if (activeId) {
+        active.querySelectorAll('video.video-native').forEach((video) => {
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        });
+      }
+      lastActiveSlideId = activeId;
+    }
   }
   // Capture phase: catches vertical scroll within any .slide as well as
   // #site-main's own horizontal scroll (scroll events don't bubble).

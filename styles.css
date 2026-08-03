@@ -348,6 +348,16 @@ nav {
   border-top: 1px solid var(--rule);
 }
 
+/* A single caption describing an entire image grid, in place of one
+   caption per image (e.g. a set of variations on the same subject). */
+.image-group-caption {
+  margin-top: -1.5rem;
+  margin-bottom: 2.5rem;
+  padding: 0;
+  border-top: none;
+  text-align: center;
+}
+
 /* ─── Process steps ──────────────────────────────────────────── */
 .steps {
   display: flex;
@@ -412,21 +422,6 @@ nav {
 }
 .body-text p + p { margin-top: 1em; }
 
-/* ─── Callout / pull quote ───────────────────────────────────── */
-.callout {
-  background: var(--tan-light);
-  border-left: 4px solid var(--clay);
-  border-radius: 0 4px 4px 0;
-  padding: 1.4rem 1.8rem;
-  margin: 2rem 0;
-  font-family: var(--serif);
-  font-size: 1.15rem;
-  color: var(--earth);
-  font-style: italic;
-  line-height: 1.6;
-  max-width: 60ch;
-}
-
 /* ─── Footer ─────────────────────────────────────────────────── */
 /* A bar spanning the whole site, mirroring the nav, but only reveals
    itself once the current slide is scrolled to its bottom. */
@@ -489,7 +484,7 @@ footer.footer-visible { transform: translateY(0); }
 }
 .video-native {
   width: 100%;
-  aspect-ratio: 16/9;
+  aspect-ratio: 16/9; /* fallback until real metadata loads (see script.js) */
   display: block;
   background: var(--earth);
 }
